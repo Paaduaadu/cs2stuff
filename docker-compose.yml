@@ -14,7 +14,7 @@ services:
       - CS2_MAXPLAYERS=32           # (Max players)
       - CS2_ADDITIONAL_ARGS="-usercon +host_workshop_collection 3104731381 -authkey D0183C4B6B469E654155BD58FE2804D6"        # (Optional additional arguments to pass into cs2)
       - CS2_GAMETYPE=0              # (Used if CS2_GAMEALIAS not defined. See https://developer.valvesoftware.com/wiki/Counter-Strike_2/Dedicated_Servers)
-      - CS2_GAMEMODE=1              # (Used if CS2_GAMEALIAS not defined. See https://developer.valvesoftware.com/wiki/Counter-Strike_2/Dedicated_Servers)
+      - CS2_GAMEMODE=0              # (Used if CS2_GAMEALIAS not defined. See https://developer.valvesoftware.com/wiki/Counter-Strike_2/Dedicated_Servers)
       - CS2_MAPGROUP=mg_active      # (Map pool)
       - CS2_STARTMAP=de_dust2      # (Start map)
       - CS2_BOT_DIFFICULTY=2          # (0 - easy, 1 - normal, 2 - hard, 3 - expert)

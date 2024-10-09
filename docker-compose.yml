@@ -20,6 +20,10 @@ services:
       - CS2_BOT_DIFFICULTY=2          # (0 - easy, 1 - normal, 2 - hard, 3 - expert)
       - CS2_BOT_QUOTA=16               # (Number of bots)
       - CS2_BOT_QUOTA_MODE=fill          # (fill, competitive)
+      - CS2_LOG="on"                #('on'/'off')
+      - CS2_LOG_MONEY=1             #(Turns money logging on/off: 0=off, 1=on)
+      - CS2_LOG_DETAIL=3            #(Combat damage logging: 0=disabled, 1=enemy, 2=friendly, 3=all)
+      - CS2_LOG_ITEMS=1             #(Turns item logging on/off: 0=off, 1=on)
 
 
 

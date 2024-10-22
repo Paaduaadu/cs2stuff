@@ -1,0 +1,1 @@
+docker build --file ./Dockerfile -t cs2wolves/pushmetrics ..

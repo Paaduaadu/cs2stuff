@@ -3,7 +3,6 @@ services:
   cs2:
     container_name: cs2
     environment:
-
       - SRCDS_TOKEN=E0926A648EA2608AD19382F43666A10F
       - CS2_SERVERNAME=HundidCS2kelder     # cfg'st
       - CS2_PORT=27015              # (CS2 server listen port tcp_udp)
@@ -24,16 +23,12 @@ services:
       - CS2_LOG_MONEY=1             #(Turns money logging on/off: 0=off, 1=on)
       - CS2_LOG_DETAIL=3            #(Combat damage logging: 0=disabled, 1=enemy, 2=friendly, 3=all)
       - CS2_LOG_ITEMS=1             #(Turns item logging on/off: 0=off, 1=on)
-
-
-
-    image: joedwards32/cs2
+    image: docker.io/cs2wolves/cs2:latest
     ports:
       - 27015:27015/tcp
       - 27015:27015/udp
     restart: unless-stopped
-    volumes:
-      - /srv/dev-disk-by-uuid-e3a1f7bf-91d6-49c8-8237-2c2a8100b9f4/appdata/cstrike/cs2:/home/steam/cs2-dedicated/
+
 
   buffer:
     container_name: buffer
@@ -43,7 +38,7 @@ services:
       - "6379:6379"
     volumes:
       - ./redis.conf:/usr/local/etc/redis/redis.conf
-      
+
   pushmetrics:
     container_name: pushmetrics
     image: docker.io/cs2wolves/pushmetrics:latest

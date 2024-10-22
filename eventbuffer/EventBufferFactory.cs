@@ -9,15 +9,8 @@ public static class EventBufferFactory
     public static Task<EventBufferContract<EventPlayerDeath>.Read> GetReadEventPlayerDeath()  =>
         RedisEventBuffer.GetReadOne<EventPlayerDeath>(nameof(EventPlayerDeath));
 
-    public static Task<EventBufferContract<EventWeaponFire>.Read> GetReadEventWeaponFire() =>
-        RedisEventBuffer.GetReadOne<EventWeaponFire>(nameof(EventWeaponFire));
-
      public static EventBufferContract<EventPlayerDeath>.Append GetAppendPlayerDeath() =>
         RedisEventBuffer.GetAppendOne<EventPlayerDeath>(nameof(EventPlayerDeath));   
-
-    public static EventBufferContract<EventWeaponFire>.Append GetAppendWeaponFire() =>
-        RedisEventBuffer.GetAppendOne<EventWeaponFire>(nameof(EventWeaponFire)); 
-
 
     private static EventBufferContract<string>.Append GetConsoleAppend() =>
         AsAsync(Console.WriteLine);

@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eventbuffer_contract", "eve
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eventbuffer_redis", "eventbuffer_redis\eventbuffer_redis.csproj", "{FF13B400-0916-499D-BB7E-E65A4E9F2BAD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "exportevents", "exportevents\exportevents.csproj", "{110023C7-13D2-4C9F-A4E4-51182492FA6E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{FF13B400-0916-499D-BB7E-E65A4E9F2BAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF13B400-0916-499D-BB7E-E65A4E9F2BAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF13B400-0916-499D-BB7E-E65A4E9F2BAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{110023C7-13D2-4C9F-A4E4-51182492FA6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{110023C7-13D2-4C9F-A4E4-51182492FA6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{110023C7-13D2-4C9F-A4E4-51182492FA6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{110023C7-13D2-4C9F-A4E4-51182492FA6E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

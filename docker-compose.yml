@@ -58,7 +58,18 @@ services:
         - type: volume
           source: influxdb2-config
           target: /etc/influxdb2
-          
+  
+  grafana:
+    image: grafana/grafana-enterprise
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+    - '3000:3000'
+    volumes:
+      - ./grafana/:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+      - grafana-storage:/var/lib/grafana
+
 secrets:
   influxdb2-admin-username:
     file: ~/.env.influxdb2-admin-username
@@ -71,3 +82,4 @@ secrets:
 volumes:
   influxdb2-data:
   influxdb2-config:
+  grafana-storage:

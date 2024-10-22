@@ -1,1 +1,1 @@
-docker build --file ./Dockerfile -t cs2wolves/pushmetrics ..
+docker build --file $PSScriptRoot/Dockerfile -t cs2wolves/pushmetrics ..

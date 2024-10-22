@@ -28,6 +28,10 @@ services:
       - 27015:27015/tcp
       - 27015:27015/udp
     restart: unless-stopped
+    volumes:
+      - cs2-dedicated:/home/steam/cs2-dedicated/
+    networks:
+      - cs2
 
 
   buffer:
@@ -38,6 +42,8 @@ services:
       - "6379:6379"
     volumes:
       - ./redis.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      - cs2
 
   pushmetrics:
     container_name: pushmetrics
@@ -53,6 +59,8 @@ services:
       - 1234:1234/udp
     secrets:
       - influxdb2-pushmetrics-token
+    networks:
+      - cs2
 
   influxdb2:
       container_name: influxdb2
@@ -77,6 +85,8 @@ services:
         - type: volume
           source: influxdb2-config
           target: /etc/influxdb2
+      networks:
+      - cs2
   
   grafana:
     image: grafana/grafana-enterprise
@@ -88,6 +98,8 @@ services:
       - ./grafana/:/etc/grafana/provisioning
       - ./grafana/dashboards:/var/lib/grafana/dashboards
       - grafana-storage:/var/lib/grafana
+    networks:
+      - cs2
 
 secrets:
   influxdb2-admin-username:
@@ -102,3 +114,8 @@ volumes:
   influxdb2-data:
   influxdb2-config:
   grafana-storage:
+  cs2-dedicated:
+
+networks:
+  cs2:
+    driver: bridge

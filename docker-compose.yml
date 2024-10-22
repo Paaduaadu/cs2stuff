@@ -35,6 +35,15 @@ services:
     volumes:
       - /srv/dev-disk-by-uuid-e3a1f7bf-91d6-49c8-8237-2c2a8100b9f4/appdata/cstrike/cs2:/home/steam/cs2-dedicated/
 
+  buffer:
+    container_name: buffer
+    image: redis:latest
+    command: redis-server /usr/local/etc/redis/redis.conf
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+      
   pushmetrics:
     container_name: pushmetrics
     image: docker.io/cs2wolves/pushmetrics:latest

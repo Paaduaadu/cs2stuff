@@ -1,0 +1,15 @@
+apiVersion: 1
+datasources:
+  - name: InfluxDB
+    type: influxdb
+    access: proxy
+    url: http://influxdb2:8086
+    isDefault: true
+    editable: true
+    jsonData:
+      version: Flux
+      organization: Wolves
+      defaultBucket: "CS2"
+      tlsSkipVerify: true
+    secureJsonData:
+      token: "value from docker secret: influxdb2-loader-token>"

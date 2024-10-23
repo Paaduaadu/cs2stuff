@@ -3,7 +3,6 @@ services:
   cs2:
     container_name: cs2
     environment:
-
       - SRCDS_TOKEN=E0926A648EA2608AD19382F43666A10F
       - CS2_SERVERNAME=HundidCS2kelder     # cfg'st
       - CS2_PORT=27015              # (CS2 server listen port tcp_udp)
@@ -24,13 +23,99 @@ services:
       - CS2_LOG_MONEY=1             #(Turns money logging on/off: 0=off, 1=on)
       - CS2_LOG_DETAIL=3            #(Combat damage logging: 0=disabled, 1=enemy, 2=friendly, 3=all)
       - CS2_LOG_ITEMS=1             #(Turns item logging on/off: 0=off, 1=on)
-
-
-
-    image: joedwards32/cs2
+    image: docker.io/cs2wolves/cs2:latest
     ports:
       - 27015:27015/tcp
       - 27015:27015/udp
     restart: unless-stopped
     volumes:
-      - /srv/dev-disk-by-uuid-e3a1f7bf-91d6-49c8-8237-2c2a8100b9f4/appdata/cstrike/cs2:/home/steam/cs2-dedicated/
+      - cs2-dedicated:/home/steam/cs2-dedicated/
+    networks:
+      - cs2
+
+
+  buffer:
+    container_name: buffer
+    image: redis:latest
+    command: redis-server /usr/local/etc/redis/redis.conf
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      - cs2
+
+  pushmetrics:
+    container_name: pushmetrics
+    image: docker.io/cs2wolves/pushmetrics:latest
+    environment:
+      - INFLUXDB_TOKEN_FILE=/run/secrets/influxdb2-pushmetrics-token
+    depends_on:
+      - buffer
+      - influxdb2
+    restart: on-failure:5
+    ports:
+      - 1234:1234/tcp
+      - 1234:1234/udp
+    secrets:
+      - influxdb2-pushmetrics-token
+    networks:
+      - cs2
+
+  influxdb2:
+      container_name: influxdb2
+      image: influxdb:2
+      ports:
+        - 8086:8086
+      environment:
+        DOCKER_INFLUXDB_INIT_MODE: setup
+        DOCKER_INFLUXDB_INIT_USERNAME_FILE: /run/secrets/influxdb2-admin-username
+        DOCKER_INFLUXDB_INIT_PASSWORD_FILE: /run/secrets/influxdb2-admin-password 
+        DOCKER_INFLUXDB_INIT_ADMIN_TOKEN_FILE: /run/secrets/influxdb2-admin-token
+        DOCKER_INFLUXDB_INIT_ORG: Wolves 
+        DOCKER_INFLUXDB_INIT_BUCKET: CS2
+      secrets:
+        - influxdb2-admin-username
+        - influxdb2-admin-password
+        - influxdb2-admin-token
+      volumes:
+        - type: volume
+          source: influxdb2-data
+          target: /var/lib/influxdb2
+        - type: volume
+          source: influxdb2-config
+          target: /etc/influxdb2
+      networks:
+      - cs2
+  
+  grafana:
+    image: grafana/grafana-enterprise
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+    - '3000:3000'
+    volumes:
+      - ./grafana/:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+      - grafana-storage:/var/lib/grafana
+    networks:
+      - cs2
+
+secrets:
+  influxdb2-admin-username:
+    file: ~/.env.influxdb2-admin-username
+  influxdb2-admin-password:
+    file: ~/.env.influxdb2-admin-password
+  influxdb2-admin-token:
+    file: ~/.env.influxdb2-admin-token
+  influxdb2-pushmetrics-token:
+    file: ~/.env.influxdb2-admin-token
+volumes:
+  influxdb2-data:
+  influxdb2-config:
+  grafana-storage:
+  cs2-dedicated:
+
+networks:
+  cs2:
+    driver: bridge

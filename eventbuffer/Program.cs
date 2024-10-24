@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using eventbuffer;
+﻿using eventbuffer;
 using eventbuffer_contract.Types;
 using InfluxDB.Client;
 using InfluxDB.Client.Writes;
@@ -10,18 +9,19 @@ using var client = new InfluxDBClient("http://influxdb2:8086", ReadSecret("INFLU
 var write = client.GetWriteApiAsync();
 var readOnePlayerDeath = await EventBufferFactory.GetReadEventPlayerDeath();
 
-await EventBufferFactory
+var seq = EventBufferFactory
         .ReadToEnd(readOnePlayerDeath)
-        .Where(x => !x.Equals(default))
-        // Just for debug logging.
-        .Select(x =>
-        {
-            Console.WriteLine(JsonSerializer.Serialize(x));
-            return x;
-        })
-        // Send to influx
-        .ForEachAsync(x =>
-            write
+        .Where(x => !x.Equals(default));
+
+await HandleAll(write, seq);
+
+static string ReadSecret(string envVariableName) => 
+    File.ReadAllText(Environment.GetEnvironmentVariable(envVariableName)!);
+
+static async Task HandleAll(WriteApiAsync write, IAsyncEnumerable<EventPlayerDeath> seq)
+    {
+        await foreach(var x in seq){
+            await write
                 .WritePointAsync(
                     PointData
                         .Measurement("EventPlayerDeath")
@@ -29,10 +29,9 @@ await EventBufferFactory
                         .ToTags("Assister", x.Assister)
                         .ToTags("Player", x.Player)
                         .Tag("Headshot", x.Headshot.ToString())
-                        .Field("Count", 1), "CS2", "Wolves"));
-
-static string ReadSecret(string envVariableName) => 
-    File.ReadAllText(Environment.GetEnvironmentVariable(envVariableName)!);
+                        .Field("Count", 1), "CS2", "Wolves");
+        }
+    }
 
 public static class InfluxDbExtensions
 {

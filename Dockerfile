@@ -6,7 +6,7 @@ COPY . ./
 # Restore as distinct layers
 RUN dotnet restore
 # Build and publish a release
-RUN dotnet publish -c Release -o out
+RUN dotnet publish  ./exportevents/exportevents.csproj -c Release -o out
 RUN ls
 
 # Build runtime image

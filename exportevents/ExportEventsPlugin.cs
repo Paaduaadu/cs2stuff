@@ -1,8 +1,7 @@
-﻿using System.Diagnostics;
-using System.Text.Json;
-using System.Threading.Channels;
+﻿using System.Threading.Channels;
 using CounterStrikeSharp.API.Core;
 using eventbuffer;
+using eventbuffer_contract;
 
 namespace exportevents;
 
@@ -20,26 +19,35 @@ public class ExportEventsPlugin : BasePlugin
         // Event handlers are BLOCKING!.
         // Delay of 1 sec stops a game frame for 1 sec.
         // Doing minimal work in the event handler is a performance goal.
-        
+
         this.channel = Channel.CreateUnbounded<eventbuffer_contract.Types.EventPlayerDeath>(
-            new UnboundedChannelOptions {
+            new UnboundedChannelOptions
+            {
                 SingleReader = true
             }
         );
 
         var appendPlayerDeath = EventBufferFactory.GetAppendPlayerDeath();
         var cancellationToken = new CancellationTokenSource().Token;
-        this.channelTask = this
-            .channel
-            .Reader
-            .ReadAllAsync()
-            .ForEachAsync(x => appendPlayerDeath(x), cancellationToken);
-            
+        this.channelTask = HandleAll(appendPlayerDeath);
+
         RegisterEventHandler((GameEventHandler<EventPlayerDeath>)((e, info) =>
         {
             channel.Writer.TryWrite(AsSerializeable(e));
             return HookResult.Continue;
         }));
+    }
+
+    private async Task HandleAll(EventBufferContract<eventbuffer_contract.Types.EventPlayerDeath>.Append appendPlayerDeath)
+    {
+        var asyncEnumerable = this
+                            .channel
+                            .Reader
+                            .ReadAllAsync();
+
+        await foreach(var t in asyncEnumerable){
+            await appendPlayerDeath(t);
+        }
     }
 
     public override void Unload(bool hotReload)
@@ -48,9 +56,6 @@ public class ExportEventsPlugin : BasePlugin
         Console.WriteLine("Channel complete");
         this.channelTask.Wait();
     }
-
-    private static string Serialize(object e) =>
-        JsonSerializer.Serialize(e, new JsonSerializerOptions());
 
     private static eventbuffer_contract.Types.EventPlayerDeath AsSerializeable(EventPlayerDeath e) =>
         new (

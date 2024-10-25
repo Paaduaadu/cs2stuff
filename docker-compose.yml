@@ -4,7 +4,7 @@ services:
     container_name: cs2
     environment:
       - SRCDS_TOKEN=E0926A648EA2608AD19382F43666A10F
-      - CS2_SERVERNAME=HundidCS2kelder     # cfg'st
+      - CS2_SERVERNAME=HundidCS2pilv     # cfg'st
       - CS2_PORT=27015              # (CS2 server listen port tcp_udp)
 #      - CS2_RCON_PORT               # (Optional, use a simple TCP proxy to have RCON listen on an alternative port. Useful for services like AWS Fargate which do not support mixed protocol ports.)
       - CS2_LAN=0                   # (0 - LAN mode disabled, 1 - LAN Mode enabled)
@@ -12,8 +12,9 @@ services:
       - CS2_PW=             # cfg*st
       - CS2_MAXPLAYERS=32           # (Max players)
       - CS2_ADDITIONAL_ARGS="-usercon +host_workshop_collection 3104731381 -authkey D0183C4B6B469E654155BD58FE2804D6"        # (Optional additional arguments to pass into cs2)
-      - CS2_GAMETYPE=0              # (Used if CS2_GAMEALIAS not defined. See https://developer.valvesoftware.com/wiki/Counter-Strike_2/Dedicated_Servers)
-      - CS2_GAMEMODE=0              # (Used if CS2_GAMEALIAS not defined. See https://developer.valvesoftware.com/wiki/Counter-Strike_2/Dedicated_Servers)
+      - CS2_GAMEALIAS="competitive"  
+#      - CS2_GAMETYPE=0              # (Used if CS2_GAMEALIAS not defined. See https://developer.valvesoftware.com/wiki/Counter-Strike_2/Dedicated_Servers)
+#      - CS2_GAMEMODE=0              # (Used if CS2_GAMEALIAS not defined. See https://developer.valvesoftware.com/wiki/Counter-Strike_2/Dedicated_Servers)
       - CS2_MAPGROUP=mg_active      # (Map pool)
       - CS2_STARTMAP=de_dust2      # (Start map)
       - CS2_BOT_DIFFICULTY=2          # (0 - easy, 1 - normal, 2 - hard, 3 - expert)

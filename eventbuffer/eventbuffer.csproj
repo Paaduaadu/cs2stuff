@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\eventbuffer_contract\eventbuffer_contract.csproj" />
     <ProjectReference Include="..\eventbuffer_redis\eventbuffer_redis.csproj" />
+    <ProjectReference Include="..\streaming\streaming.csproj" />
   </ItemGroup>
 
   <ItemGroup>

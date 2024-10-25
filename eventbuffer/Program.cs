@@ -1,7 +1,7 @@
-﻿using eventbuffer;
-using eventbuffer_contract.Types;
+﻿using eventbuffer_contract.Types;
 using InfluxDB.Client;
 using InfluxDB.Client.Writes;
+using streaming;
 
 Console.WriteLine("0.0.1");
 
@@ -16,7 +16,7 @@ var seq = EventBufferFactory
 await HandleAll(write, seq);
 
 static string ReadSecret(string envVariableName) => 
-    File.ReadAllText(Environment.GetEnvironmentVariable(envVariableName)!);
+    File.ReadAllText(Environment.GetEnvironmentVariable(envVariableName)!).Trim();
 
 static async Task HandleAll(WriteApiAsync write, IAsyncEnumerable<EventPlayerDeath> seq)
     {

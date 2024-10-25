@@ -1,7 +1,7 @@
 ﻿using System.Threading.Channels;
 using CounterStrikeSharp.API.Core;
-using eventbuffer;
 using eventbuffer_contract;
+using streaming;
 
 namespace exportevents;
 

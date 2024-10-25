@@ -1,16 +1,15 @@
 ﻿namespace streaming;
 
+using System.Text.Json;
 using eventbuffer_contract;
-using eventbuffer_contract.Types;
 using eventbuffer_redis;
 
 public static class EventBufferFactory
 {
-    public static Task<EventBufferContract<EventPlayerDeath>.Read> GetReadEventPlayerDeath()  =>
-        RedisEventBuffer.GetReadOne<EventPlayerDeath>(nameof(EventPlayerDeath));
-
-     public static EventBufferContract<EventPlayerDeath>.Append GetAppendPlayerDeath() =>
-        RedisEventBuffer.GetAppendOne<EventPlayerDeath>(nameof(EventPlayerDeath));   
+    public static Task<EventBufferContract<T>.Read> GetReadEvent<T>() where T : struct  =>
+        RedisEventBuffer.GetReadOne<T>(nameof(T));
+    public static EventBufferContract<T>.Append GetAppendEvent<T>() where T : struct =>
+        RedisEventBuffer.GetAppendOne<T>(nameof(T));
 
     private static EventBufferContract<string>.Append GetConsoleAppend() =>
         AsAsync(Console.WriteLine);
@@ -21,6 +20,18 @@ public static class EventBufferFactory
                 value(x);
                 return Task.CompletedTask;
             };
+
+    public static async Task ExtractTransformLoad<TIn, TOut>(
+        this IAsyncEnumerable<TIn> extract, 
+        Func<TIn, TOut> transform,
+        Func<TOut, Task> load)
+    {
+        await foreach(var x in extract)
+        {
+            Console.WriteLine(JsonSerializer.Serialize(x));
+            await load(transform(x));
+        }
+    }
 
     public static async IAsyncEnumerable<T> ReadToEnd<T>(EventBufferContract<T>.Read readOne) where T : struct {
         var ct = new CancellationTokenSource().Token;
@@ -36,4 +47,6 @@ public static class EventBufferFactory
             yield return v;
         }
     }
+
+    
 }

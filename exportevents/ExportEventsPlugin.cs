@@ -7,8 +7,8 @@ namespace exportevents;
 
 public class ExportEventsPlugin : BasePlugin
 {
-    private Channel<eventbuffer_contract.Types.EventPlayerDeath> channel;
-    private Task channelTask;
+    private Channel<eventbuffer_contract.Types.EventPlayerDeath> playerDeathChannel;
+    private Task playerDeathTask;
 
     public override string ModuleName => nameof(ExportEventsPlugin);
 
@@ -20,7 +20,7 @@ public class ExportEventsPlugin : BasePlugin
         // Delay of 1 sec stops a game frame for 1 sec.
         // Doing minimal work in the event handler is a performance goal.
 
-        this.channel = Channel.CreateUnbounded<eventbuffer_contract.Types.EventPlayerDeath>(
+        this.playerDeathChannel = Channel.CreateUnbounded<eventbuffer_contract.Types.EventPlayerDeath>(
             new UnboundedChannelOptions
             {
                 SingleReader = true
@@ -29,32 +29,27 @@ public class ExportEventsPlugin : BasePlugin
 
         var appendPlayerDeath = EventBufferFactory.GetAppendPlayerDeath();
         var cancellationToken = new CancellationTokenSource().Token;
-        this.channelTask = HandleAll(appendPlayerDeath);
+
+        this.playerDeathTask = this
+            .playerDeathChannel
+            .Reader
+            .ReadAllAsync()
+            .ExtractTransformLoad(
+                gameEvent => gameEvent,
+                gameEvent => appendPlayerDeath(gameEvent));
 
         RegisterEventHandler((GameEventHandler<EventPlayerDeath>)((e, info) =>
         {
-            channel.Writer.TryWrite(AsSerializeable(e));
+            playerDeathChannel.Writer.TryWrite(AsSerializeable(e));
             return HookResult.Continue;
         }));
     }
 
-    private async Task HandleAll(EventBufferContract<eventbuffer_contract.Types.EventPlayerDeath>.Append appendPlayerDeath)
-    {
-        var asyncEnumerable = this
-                            .channel
-                            .Reader
-                            .ReadAllAsync();
-
-        await foreach(var t in asyncEnumerable){
-            await appendPlayerDeath(t);
-        }
-    }
-
     public override void Unload(bool hotReload)
     {
-        this.channel.Writer.Complete();
+        this.playerDeathChannel.Writer.Complete();
         Console.WriteLine("Channel complete");
-        this.channelTask.Wait();
+        this.playerDeathTask.Wait();
     }
 
     private static eventbuffer_contract.Types.EventPlayerDeath AsSerializeable(EventPlayerDeath e) =>

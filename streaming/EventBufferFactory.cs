@@ -22,6 +22,17 @@ public static class EventBufferFactory
                 return Task.CompletedTask;
             };
 
+    public static async Task ExtractTransformLoad<TIn, TOut>(
+        this IAsyncEnumerable<TIn> extract, 
+        Func<TIn, TOut> transform,
+        Func<TOut, Task> load)
+    {
+        await foreach(var x in extract)
+        {
+            await load(transform(x));
+        }
+    }
+
     public static async IAsyncEnumerable<T> ReadToEnd<T>(EventBufferContract<T>.Read readOne) where T : struct {
         var ct = new CancellationTokenSource().Token;
         while (!ct.IsCancellationRequested) {

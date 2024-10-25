@@ -12,5 +12,5 @@ RUN ls
 # Build runtime image
 FROM joedwards32/cs2
 COPY --from=build-env /App/out ./exportevents
-COPY --from=build-env /App/pre.sh /home/steam/cs2-dedicated/pre.sh
-COPY --from=build-env /App/post.sh /home/steam/cs2-dedicated/post.sh
+COPY --from=build-env /App/pre.sh /etc/pre.sh
+COPY --from=build-env /App/post.sh /etc/post.sh

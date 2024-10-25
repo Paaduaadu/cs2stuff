@@ -1,4 +1,5 @@
-﻿using eventbuffer_contract.Types;
+﻿using eventbuffer;
+using eventbuffer_contract.Types;
 using InfluxDB.Client;
 using InfluxDB.Client.Writes;
 using streaming;
@@ -9,33 +10,39 @@ using var client = new InfluxDBClient("http://influxdb2:8086", Extensions.ReadSe
 var write = client.GetWriteApiAsync();
 Func<PointData, Task> writeMetric = metric => write.WritePointAsync(metric,  "CS2", "Wolves");
 
-await EventBufferFactory
-    .ReadToEnd(await EventBufferFactory.GetReadEventPlayerDeath())
-    .Where(gameEvent => !gameEvent.Equals(default))
-    .ExtractTransformLoad(
-        transform: Extensions.ToMetric,
-        load: writeMetric);
+var tasks = new [] {
+    Process( 
+        await EventBufferFactory.GetReadEvent<EventPlayerDeath>(), 
+        Transform.ToMetric),
+    Process(
+        await EventBufferFactory.GetReadEvent<EventPlayerHurt>(),
+        Transform.ToMetric)
+};
+
+await Task.WhenAll(tasks);
+
+Task Process<T>(
+    eventbuffer_contract.EventBufferContract<T>.Read readOneGameEvent,
+    Func<T, PointData> toMetric) where T : struct => 
+        Extensions.Process<T>(
+            writeMetric, 
+            readOneGameEvent, 
+            toMetric);
 
 public static class Extensions
 {
+    public static Task Process<T>(
+        Func<PointData, Task> writeMetric,
+        eventbuffer_contract.EventBufferContract<T>.Read readOneGameEvent,
+        Func<T, PointData> toMetric) where T : struct => 
+        EventBufferFactory
+            .ReadToEnd(readOneGameEvent)
+            .Where(gameEvent => !gameEvent.Equals(default(T)))
+            .ExtractTransformLoad(
+                transform: toMetric,
+            load: writeMetric);
+
     public static string ReadSecret(string envVariableName) => 
         File.ReadAllText(Environment.GetEnvironmentVariable(envVariableName)!).Trim();
-
-    public static PointData ToMetric(this EventPlayerDeath x) => 
-        PointData
-            .Measurement("EventPlayerDeath")
-            .ToTags("Attacker", x.Attacker)
-            .ToTags("Assister", x.Assister)
-            .ToTags("Player", x.Player)
-            .Tag("Headshot", x.Headshot.ToString())
-            .Tag("Weapon", x.Weapon != null ? x.Weapon.ToString() : string.Empty)
-            .Field("Count", 1);
-
-    public static PointData ToTags(this PointData pd, string label, PlayerController? pc) =>
-        pc == null
-            ? pd
-            : pd
-                .Tag(label, pc.PlayerName)
-                .Tag($"{label}.IsBot", pc.IsBot.ToString());
 }
 

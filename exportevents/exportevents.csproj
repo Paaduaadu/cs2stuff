@@ -12,11 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\eventbuffer_contract\eventbuffer_contract.csproj" />
-    <ProjectReference Include="..\eventbuffer\eventbuffer.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="influxdb\" />
+    <ProjectReference Include="..\streaming\streaming.csproj" />
   </ItemGroup>
 
 </Project>

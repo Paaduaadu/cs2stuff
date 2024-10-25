@@ -33,7 +33,7 @@ services:
     networks:
       - cs2
 
-
+      
   buffer:
     container_name: buffer
     image: redis:latest

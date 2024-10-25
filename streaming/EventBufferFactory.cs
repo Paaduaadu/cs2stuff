@@ -1,8 +1,8 @@
+﻿namespace streaming;
+
 using eventbuffer_contract;
 using eventbuffer_contract.Types;
 using eventbuffer_redis;
-
-namespace eventbuffer;
 
 public static class EventBufferFactory
 {

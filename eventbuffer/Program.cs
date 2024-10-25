@@ -29,6 +29,7 @@ static async Task HandleAll(WriteApiAsync write, IAsyncEnumerable<EventPlayerDea
                         .ToTags("Assister", x.Assister)
                         .ToTags("Player", x.Player)
                         .Tag("Headshot", x.Headshot.ToString())
+                        .Tag("Weapon", x.Weapon.ToString())
                         .Field("Count", 1), "CS2", "Wolves");
         }
     }

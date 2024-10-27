@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using eventbuffer_contract;
 using StackExchange.Redis;
 namespace eventbuffer_redis;
 
@@ -9,7 +8,7 @@ public static class RedisEventBuffer
     private const string GroupName = "loader";
     private const string ConsumerName = GroupName + "-0";
 
-    public static async Task<EventBufferContract<T>.Read> GetReadOne<T>(string streamName) where T : struct
+    public static async Task<Func<Task<T>>> GetReadOne<T>(string streamName) where T : struct
     {
         var db = GetDatabase();
 
@@ -18,7 +17,7 @@ public static class RedisEventBuffer
         return () => ReadOne<T>(db, streamName);
     }
 
-    public static EventBufferContract<T>.Append GetAppendOne<T>(string streamName)
+    public static Func<T, Task> GetAppendOne<T>(string streamName)
     {
         var db = GetDatabase();
         

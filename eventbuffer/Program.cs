@@ -22,7 +22,7 @@ var tasks = new [] {
 await Task.WhenAll(tasks);
 
 Task Process<T>(
-    eventbuffer_contract.EventBufferContract<T>.Read readOneGameEvent,
+    Func<Task<T>> readOneGameEvent,
     Func<T, PointData> toMetric) where T : struct => 
         Extensions.Process<T>(
             writeMetric, 
@@ -33,7 +33,7 @@ public static class Extensions
 {
     public static Task Process<T>(
         Func<PointData, Task> writeMetric,
-        eventbuffer_contract.EventBufferContract<T>.Read readOneGameEvent,
+        Func<Task<T>> readOneGameEvent,
         Func<T, PointData> toMetric) where T : struct => 
         EventBufferFactory
             .ReadToEnd(readOneGameEvent)

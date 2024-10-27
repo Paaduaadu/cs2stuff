@@ -1,17 +1,10 @@
-﻿using System.Threading.Channels;
-using CounterStrikeSharp.API.Core;
-using CounterStrikeSharp.API.Modules.Memory;
-using streaming;
+﻿using CounterStrikeSharp.API.Core;
 
 namespace exportevents;
 
 public class ExportEventsPlugin : BasePlugin
 {
-    private Channel<eventbuffer_contract.Types.EventPlayerDeath> playerDeathChannel;
-    private Channel<eventbuffer_contract.Types.EventPlayerHurt> playerHurtChannel;
-
-    private Task playerDeathTask;
-    private Task playerHurtTask;
+    private (Task ReadChannelTask, Action<Exception?> StopWriting)[] readEventChannelTasks = [];
 
     public override string ModuleName => nameof(ExportEventsPlugin);
 
@@ -23,90 +16,28 @@ public class ExportEventsPlugin : BasePlugin
         // Delay of 1 sec stops a game frame for 1 sec.
         // Doing minimal work in the event handler is a performance goal.
 
-        this.playerDeathChannel = Channel.CreateUnbounded<eventbuffer_contract.Types.EventPlayerDeath>(
-            new UnboundedChannelOptions
-            {
-                SingleReader = true
-            }
-        );
-
-        this.playerHurtChannel = Channel.CreateUnbounded<eventbuffer_contract.Types.EventPlayerHurt>(
-            new UnboundedChannelOptions
-            {
-                SingleReader = true
-            }
-        );
-
-        var appendPlayerDeath = EventBufferFactory.GetAppendEvent<eventbuffer_contract.Types.EventPlayerDeath>();
-        var appendPlayerHurt = EventBufferFactory.GetAppendEvent<eventbuffer_contract.Types.EventPlayerHurt>();
-        var cancellationToken = new CancellationTokenSource().Token;
-
-        this.playerDeathTask = this
-            .playerDeathChannel
-            .Reader
-            .ReadAllAsync()
-            .ExtractTransformLoad(
-                gameEvent => gameEvent,
-                gameEvent => appendPlayerDeath(gameEvent));
-
-        this.playerHurtTask = this
-            .playerHurtChannel
-            .Reader
-            .ReadAllAsync()
-            .ExtractTransformLoad(
-                gameEvent => gameEvent,
-                gameEvent => appendPlayerHurt(gameEvent));
-
-        RegisterEventHandler((GameEventHandler<EventPlayerDeath>)((e, info) =>
-        {
-            playerDeathChannel.Writer.TryWrite(AsSerializeable(e));
-            return HookResult.Continue;
-        }));
-
-        RegisterEventHandler((GameEventHandler<EventPlayerHurt>)((e, info) =>
-        {
-            playerHurtChannel.Writer.TryWrite(AsSerializeable(e));
-            return HookResult.Continue;
-        }));
+        readEventChannelTasks = [
+            // Player is killed.
+            OffloadEventsAsync.ListenEventAndPublish<
+                EventPlayerDeath, 
+                eventbuffer_contract.Types.EventPlayerDeath>(this, Transform.AsSerializeable),
+            // Damage done to a player.      
+            OffloadEventsAsync.ListenEventAndPublish<
+                EventPlayerHurt, 
+                eventbuffer_contract.Types.EventPlayerHurt>(this, Transform.AsSerializeable)
+        ];
     }
 
     public override void Unload(bool hotReload)
     {
-        this.playerDeathChannel.Writer.Complete();
-        this.playerHurtChannel.Writer.Complete();
-        Console.WriteLine("Channel complete");
-        this.playerDeathTask.Wait();
-        this.playerHurtTask.Wait();
+        foreach(var action in readEventChannelTasks.Select(x => x.StopWriting)) {
+            action(null);
+        }
+
+        Console.WriteLine("Channels complete. Draining events.");
+
+        Task.WaitAll([.. readEventChannelTasks.Select(x => x.ReadChannelTask)]);
+
+        Console.WriteLine("Events drained.");
     }
-
-    private static eventbuffer_contract.Types.EventPlayerDeath AsSerializeable(EventPlayerDeath e) =>
-        new (
-            e.GetType().Name,
-            AsSerializeable(e.Userid),
-            AsSerializeable(e.Attacker),
-            AsSerializeable(e.Assister),
-            e.Headshot,
-            e.Weapon
-        );
-
-    private eventbuffer_contract.Types.EventPlayerHurt AsSerializeable(EventPlayerHurt e) =>
-        new (
-            e.GetType().Name,
-            AsSerializeable(e.Userid),
-            AsSerializeable(e.Attacker),
-            e.Weapon,
-            e.DmgHealth,
-            e.DmgArmor,
-            HitgroupToString(e.Hitgroup)
-        );
-
-    private static string HitgroupToString(int hitgroup) => 
-        Enum.GetName((HitGroup_t)hitgroup) ?? string.Empty;
-
-    private static eventbuffer_contract.Types.PlayerController? AsSerializeable(CCSPlayerController? e) =>
-        e == null
-            ? null 
-            : e.IsValid 
-                ? new(e.PlayerName, e.IsBot)
-                : null;
 }

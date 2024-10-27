@@ -1,25 +1,14 @@
 ﻿namespace streaming;
 
-using System.Text.Json;
-using eventbuffer_contract;
 using eventbuffer_redis;
 
 public static class EventBufferFactory
 {
-    public static Task<EventBufferContract<T>.Read> GetReadEvent<T>() where T : struct  =>
-        RedisEventBuffer.GetReadOne<T>(nameof(T));
-    public static EventBufferContract<T>.Append GetAppendEvent<T>() where T : struct =>
-        RedisEventBuffer.GetAppendOne<T>(nameof(T));
+    public static Task<Func<Task<T>>> GetReadEvent<T>() where T : struct  =>
+        RedisEventBuffer.GetReadOne<T>(typeof(T).Name);
 
-    private static EventBufferContract<string>.Append GetConsoleAppend() =>
-        AsAsync(Console.WriteLine);
-
-    private static EventBufferContract<string>.Append AsAsync(Action<string> value) =>
-        x =>
-            {
-                value(x);
-                return Task.CompletedTask;
-            };
+    public static Func<T, Task> GetAppendEvent<T>() where T : struct =>
+        RedisEventBuffer.GetAppendOne<T>(typeof(T).Name);
 
     public static async Task ExtractTransformLoad<TIn, TOut>(
         this IAsyncEnumerable<TIn> extract, 
@@ -28,12 +17,11 @@ public static class EventBufferFactory
     {
         await foreach(var x in extract)
         {
-            Console.WriteLine(JsonSerializer.Serialize(x));
             await load(transform(x));
         }
     }
 
-    public static async IAsyncEnumerable<T> ReadToEnd<T>(EventBufferContract<T>.Read readOne) where T : struct {
+    public static async IAsyncEnumerable<T> ReadToEnd<T>(Func<Task<T>> readOne) where T : struct {
         var ct = new CancellationTokenSource().Token;
         while (!ct.IsCancellationRequested) {
             T v = await readOne();

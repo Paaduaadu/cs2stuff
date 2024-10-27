@@ -2,7 +2,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0@sha256:35792ea4ad1db051981f62b313f1be3b46b
 WORKDIR /App
 
 # Copy everything
-COPY .. ./
+COPY . ./
 # Restore as distinct layers
 RUN dotnet restore ./eventbuffer/eventbuffer.csproj
 # Build and publish a release

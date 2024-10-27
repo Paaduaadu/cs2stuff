@@ -4,7 +4,7 @@ using InfluxDB.Client;
 using InfluxDB.Client.Writes;
 using streaming;
 
-Console.WriteLine("0.0.1");
+Console.WriteLine("0.0.2");
 
 using var client = new InfluxDBClient("http://influxdb2:8086", Extensions.ReadSecret("INFLUXDB_TOKEN_FILE"));
 var write = client.GetWriteApiAsync();

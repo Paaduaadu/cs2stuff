@@ -12,6 +12,7 @@ public class ExportEventsPlugin : BasePlugin
 
     public override void Load(bool hotReload)
     {
+        Console.WriteLine(ModuleVersion);
         // Event handlers are BLOCKING!.
         // Delay of 1 sec stops a game frame for 1 sec.
         // Doing minimal work in the event handler is a performance goal.

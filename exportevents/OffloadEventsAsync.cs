@@ -1,29 +1,26 @@
 using System.Threading.Channels;
-using CounterStrikeSharp.API.Core;
-using CounterStrikeSharp.API.Modules.Events;
 using streaming;
-using static CounterStrikeSharp.API.Core.BasePlugin;
 
 namespace exportevents;
 
 public static class OffloadEventsAsync
 {
-    public static (Task ReadChannelTask, Action<Exception?> StopWriting) ListenEventAndPublish<TGameEvent, TStatsEvent>(BasePlugin plugin, Func<TGameEvent, TStatsEvent> transform)
-        where TStatsEvent : struct 
-        where TGameEvent : GameEvent
+    public static (Task ReadChannelTask, Action<Exception?> StopWriting) ListenEventAndPublish<TSourceEvent, TTargetType>(
+        Action<Action<TSourceEvent>> publishCallback, 
+        Func<TSourceEvent, TTargetType> transform)
+        where TTargetType : struct
     {
-        var channel = CreateChannel<TStatsEvent>();
+        var channel = CreateChannel<TTargetType>();
 
-        plugin.RegisterEventHandler((GameEventHandler<TGameEvent>)((e, info) =>
+        publishCallback(e =>
         {
             channel.Writer.TryWrite(transform(e));
-            return HookResult.Continue;
-        }));
+        });
 
         return (
             ReadChannel(
                 channel,
-                EventBufferFactory.GetAppendEvent<TStatsEvent>()),
+                EventBufferFactory.GetAppendEvent<TTargetType>()),
             channel.Writer.Complete
         );
     }

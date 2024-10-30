@@ -7,4 +7,5 @@ var writeMetric = Influx.GetWrite(Extensions.ReadSecret("INFLUXDB_TOKEN_FILE"));
 
 await Task.WhenAll(
     await Influx.ProcessEvent<EventPlayerDeath>(Transform.ToMetric, writeMetric),
-    await Influx.ProcessEvent<EventPlayerHurt>(Transform.ToMetric, writeMetric));
+    await Influx.ProcessEvent<EventPlayerHurt>(Transform.ToMetric, writeMetric),
+    await Influx.ProcessEvent<EventRoundMvp>(Transform.ToMetric, writeMetric));

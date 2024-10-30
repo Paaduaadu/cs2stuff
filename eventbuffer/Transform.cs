@@ -25,6 +25,13 @@ public static class Transform
             .Field(nameof(x.DmgHealth), x.DmgHealth)
             .Field(nameof(x.DmgArmor), x.DmgArmor);
 
+    public static PointData ToMetric(this EventRoundMvp x) => 
+        PointData
+            .Measurement(x.GetType().Name)
+            .ToTags("Player", x.Player)
+            .Tag("Reason", x.Reason.ToString())
+            .Field("Count", 1);
+
     public static PointData ToTags(this PointData pd, string label, PlayerController? pc) =>
         pc == null
             ? pd

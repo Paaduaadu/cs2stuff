@@ -37,7 +37,8 @@ public class ExportEventsPlugin : BasePlugin
 
             // Damage done to a player.      
             ListenAndPublish<EventPlayerHurt, eventbuffer_contract.Types.EventPlayerHurt>(Transform.AsSerializeable),
-            ListenAndPublish<EventRoundMvp, eventbuffer_contract.Types.EventRoundMvp>(Transform.AsSerializeable)
+            ListenAndPublish<EventRoundMvp, eventbuffer_contract.Types.EventRoundMvp>(Transform.AsSerializeable),
+            ListenAndPublish<EventBombPlanted, eventbuffer_contract.Types.EventBombPlanted>(Transform.AsSerializeable)
         ];
     }
 

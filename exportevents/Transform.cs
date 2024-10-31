@@ -29,7 +29,18 @@ public static class Transform
         new (
             e.GetType().Name,
             AsSerializeable(e.Userid)!,
-            e.Reason
+            e.Reason,
+            Enum.GetName((CSMvpReason_t)e.Reason) ?? string.Empty,
+            e.Value
+        );
+
+    public static eventbuffer_contract.Types.EventBombPlanted AsSerializeable(EventBombPlanted e) =>
+        new (
+            e.GetType().Name,
+            AsSerializeable(e.Userid)!,
+            e.Site,
+            //A = 425 B = 426
+            e.Site == 425 ? "A" : "B"
         );
 
     // See https://github.com/roflmuffin/CounterStrikeSharp/tree/5c9d38b2b006e7edf544bb8f185acb4bd5fb6722/managed/CounterStrikeSharp.API/Core/Schema/Enums
@@ -43,4 +54,13 @@ public static class Transform
             : e.IsValid 
                 ? new(e.PlayerName, e.IsBot)
                 : null;
+
+    enum CSMvpReason_t
+    {
+        CSMVP_UNDEFINED = 0,
+        CSMVP_ELIMINATION,
+        CSMVP_BOMBPLANT,
+        CSMVP_BOMBDEFUSE,
+        CSMVP_HOSTAGERESCUE,
+    };
 }

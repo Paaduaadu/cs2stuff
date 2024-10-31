@@ -1,5 +1,6 @@
 ﻿namespace streaming;
 
+using System.Text.Json;
 using eventbuffer_redis;
 
 public static class EventBufferFactory
@@ -17,6 +18,7 @@ public static class EventBufferFactory
     {
         await foreach(var x in extract)
         {
+            Console.WriteLine("Processing: " + JsonSerializer.Serialize(transform(x)));
             await load(transform(x));
         }
     }

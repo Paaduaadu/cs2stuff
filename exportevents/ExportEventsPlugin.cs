@@ -9,12 +9,12 @@ public class ExportEventsPlugin : BasePlugin
 
     public override string ModuleName => nameof(ExportEventsPlugin);
 
-    public override string ModuleVersion => "0.0.2";
+    public override string ModuleVersion => "0.0.5";
 
     public override void Load(bool hotReload)
     {
         // Just to indicate in console that "it tried to start and what version it is. Useful to see if the new code was actually loaded".
-        Console.WriteLine(ModuleVersion);
+        Console.WriteLine("ExportEvents:" + ModuleVersion);
 
         // Event handlers are BLOCKING!.
         // Delay of 1 sec stops a game frame for 1 sec.
@@ -36,7 +36,9 @@ public class ExportEventsPlugin : BasePlugin
                     Transform.AsSerializeable),
 
             // Damage done to a player.      
-            ListenAndPublish<EventPlayerHurt, eventbuffer_contract.Types.EventPlayerHurt>(Transform.AsSerializeable)
+            ListenAndPublish<EventPlayerHurt, eventbuffer_contract.Types.EventPlayerHurt>(Transform.AsSerializeable),
+            ListenAndPublish<EventRoundMvp, eventbuffer_contract.Types.EventRoundMvp>(Transform.AsSerializeable),
+            ListenAndPublish<EventBombPlanted, eventbuffer_contract.Types.EventBombPlanted>(Transform.AsSerializeable)
         ];
     }
 
@@ -53,11 +55,17 @@ public class ExportEventsPlugin : BasePlugin
         Console.WriteLine("Events drained.");
     }
 
-    private (Task ReadChannelTask, Action<Exception?> StopWriting) ListenAndPublish<TGameEvent, T>(Func<TGameEvent, T> transform) 
-        where TGameEvent: GameEvent
-        where T: struct =>
-        OffloadEventsAsync.ListenEventAndPublish(x =>
-            RegisterEventHandler<TGameEvent>((x, _) => {
+    private (Task ReadChannelTask, Action<Exception?> StopWriting) ListenAndPublish<TGameEvent, T>(
+        Func<TGameEvent, T> transform)
+        where TGameEvent : GameEvent
+        where T : struct
+    {
+        Console.WriteLine("Starting to publish:" + typeof(T).Name);
+        return OffloadEventsAsync.ListenEventAndPublish(handleEvent =>
+            RegisterEventHandler<TGameEvent>((x, _) =>
+            {
+                handleEvent(x);
                 return HookResult.Continue;
             }, HookMode.Post), transform);
+    }
 }

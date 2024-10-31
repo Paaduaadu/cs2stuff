@@ -6,13 +6,16 @@ using streaming;
 internal static class Influx {
 
     public async static Task<Task> ProcessEvent<T>(
-        Func<T, PointData> toMetric, 
+        Func<T, PointData> toMetric,
         Func<PointData, Task> writeMetric)
-        where T : struct => 
-            Extensions.Process(
+        where T : struct
+    {
+        Console.WriteLine($"Started to process {typeof(T).Name}");
+        return Extensions.Process(
                 await EventBufferFactory.GetReadEvent<T>(),
                 toMetric,
                 writeMetric);
+    }
 
     public static Func<PointData, Task> GetWrite(string token)
     {

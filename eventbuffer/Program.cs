@@ -1,7 +1,7 @@
 ﻿using eventbuffer;
 using eventbuffer_contract.Types;
 
-Console.WriteLine("0.0.2");
+Console.WriteLine("0.0.4");
 
 var writeMetric = Influx.GetWrite(Extensions.ReadSecret("INFLUXDB_TOKEN_FILE"));
 

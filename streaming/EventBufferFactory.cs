@@ -1,6 +1,5 @@
 ﻿namespace streaming;
 
-using System.Text.Json;
 using eventbuffer_redis;
 
 public static class EventBufferFactory

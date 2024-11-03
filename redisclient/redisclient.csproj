@@ -1,10 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\eventbuffer_contract\eventbuffer_contract.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="StackExchange.Redis" Version="2.8.16" />
   </ItemGroup>
 

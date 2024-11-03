@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\eventbuffer_contract\contract.csproj" />
-    <ProjectReference Include="..\eventbuffer_redis\redisclient.csproj" />
+    <ProjectReference Include="..\contract\contract.csproj" />
+    <ProjectReference Include="..\redisclient\redisclient.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

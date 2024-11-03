@@ -3,13 +3,11 @@ WORKDIR /App
 
 # Copy everything
 COPY . ./
-# Restore as distinct layers
-RUN dotnet restore ./eventbuffer/eventbuffer.csproj
 # Build and publish a release
-RUN dotnet publish ./eventbuffer/eventbuffer.csproj -c Release -o out
+RUN dotnet publish ./pushmetrics/pushmetrics.csproj -c Release -o out
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0@sha256:6c4df091e4e531bb93bdbfe7e7f0998e7ced344f54426b7e874116a3dc3233ff
 WORKDIR /App
 COPY --from=build-env /App/out .
-ENTRYPOINT ["dotnet", "eventbuffer.dll"]
+ENTRYPOINT ["dotnet", "pushmetrics.dll"]

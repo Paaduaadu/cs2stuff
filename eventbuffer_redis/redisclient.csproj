@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\eventbuffer_contract\eventbuffer_contract.csproj" />
+    <ProjectReference Include="..\eventbuffer_contract\contract.csproj" />
   </ItemGroup>
 
   <ItemGroup>

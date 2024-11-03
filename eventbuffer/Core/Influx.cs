@@ -1,4 +1,3 @@
-using eventbuffer_contract.Types;
 using InfluxDB.Client;
 using InfluxDB.Client.Writes;
 using streaming;

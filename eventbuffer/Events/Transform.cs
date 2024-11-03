@@ -1,11 +1,12 @@
+using eventbuffer_contract.Events;
 using eventbuffer_contract.Types;
 using InfluxDB.Client.Writes;
 
-namespace eventbuffer;
+namespace eventbuffer.Events;
 
 public static class Transform
 {
-    public static PointData ToMetric(this EventPlayerDeath x) => 
+    public static PointData ToMetric(this EventPlayerDeath x) =>
         PointData
             .Measurement(x.GetType().Name)
             .ToTags("Attacker", x.Attacker)
@@ -15,7 +16,7 @@ public static class Transform
             .Tag("Weapon", x.Weapon != null ? x.Weapon.ToString() : string.Empty)
             .Field("Count", 1);
 
-    public static PointData ToMetric(this EventPlayerHurt x) => 
+    public static PointData ToMetric(this EventPlayerHurt x) =>
         PointData
             .Measurement(x.GetType().Name)
             .ToTags("Attacker", x.Attacker)
@@ -25,7 +26,7 @@ public static class Transform
             .Field(nameof(x.DmgHealth), x.DmgHealth)
             .Field(nameof(x.DmgArmor), x.DmgArmor);
 
-    public static PointData ToMetric(this EventRoundMvp x) => 
+    public static PointData ToMetric(this EventRoundMvp x) =>
         PointData
             .Measurement(x.GetType().Name)
             .ToTags("Player", x.Player)
@@ -33,7 +34,7 @@ public static class Transform
             .Tag("ReasonString", x.ReasonString)
             .Field("Value", x.Value);
 
-    public static PointData ToMetric(this EventBombPlanted x) => 
+    public static PointData ToMetric(this EventBombPlanted x) =>
         PointData
             .Measurement(x.GetType().Name)
             .ToTags("Player", x.Player)

@@ -1,4 +1,6 @@
-namespace eventbuffer_contract.Types;
+using eventbuffer_contract.Types;
+
+namespace eventbuffer_contract.Events;
 
 public record struct EventPlayerHurt(
     string EventName,

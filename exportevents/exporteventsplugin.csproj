@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\eventbuffer_contract\eventbuffer_contract.csproj" />
+    <ProjectReference Include="..\eventbuffer_contract\contract.csproj" />
     <ProjectReference Include="..\streaming\streaming.csproj" />
   </ItemGroup>
 

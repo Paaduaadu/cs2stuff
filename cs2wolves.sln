@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "exporteventsplugin", "expor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "contract", "contract\contract.csproj", "{1344E2A2-99E8-4D43-82A8-C92D31D0FC8B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "publishmetrics", "publishmetrics\publishmetrics.csproj", "{ABA96AF8-3A18-4B66-919F-5A46733316B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Influx", "Influx\Influx.csproj", "{56020A64-7774-4957-B831-2C1B871EDF5F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{1344E2A2-99E8-4D43-82A8-C92D31D0FC8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1344E2A2-99E8-4D43-82A8-C92D31D0FC8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1344E2A2-99E8-4D43-82A8-C92D31D0FC8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABA96AF8-3A18-4B66-919F-5A46733316B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABA96AF8-3A18-4B66-919F-5A46733316B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABA96AF8-3A18-4B66-919F-5A46733316B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABA96AF8-3A18-4B66-919F-5A46733316B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56020A64-7774-4957-B831-2C1B871EDF5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56020A64-7774-4957-B831-2C1B871EDF5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56020A64-7774-4957-B831-2C1B871EDF5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56020A64-7774-4957-B831-2C1B871EDF5F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

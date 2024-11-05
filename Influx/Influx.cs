@@ -1,8 +1,10 @@
 using InfluxDB.Client;
+using InfluxDB.Client.Api.Domain;
+using InfluxDB.Client.Core.Flux.Domain;
 using InfluxDB.Client.Writes;
 using streaming;
 
-internal static class Influx {
+public static class Influx {
 
     public async static Task<Task> ProcessEvent<T>(
         Func<T, PointData> toMetric,
@@ -10,7 +12,7 @@ internal static class Influx {
         where T : struct
     {
         Console.WriteLine($"Started to process {typeof(T).Name}");
-        return Extensions.Process(
+        return OffloadEventsAsync.Process(
                 await EventBufferFactory.GetReadEvent<T>(),
                 toMetric,
                 writeMetric);
@@ -21,5 +23,12 @@ internal static class Influx {
         var write = new InfluxDBClient("http://influxdb2:8086", token)
             .GetWriteApiAsync();
         return metric => write.WritePointAsync(metric, "CS2", "Wolves");
+    }
+
+    public static Func<string, IAsyncEnumerable<T>> GetRead<T>(string token, string url)
+    {
+        var queryApi = new InfluxDBClient(url, token)
+            .GetQueryApi();
+        return query => queryApi.QueryAsyncEnumerable<T>(query, "Wolves");
     }
 }

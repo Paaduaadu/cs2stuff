@@ -102,6 +102,15 @@ services:
     networks:
       - cs2
 
+  publishmetrics:
+    image: cs2wolves/publishmetrics
+    container_name: publishmetrics
+    restart: unless-stopped
+    volumes:
+      - ./publishmetrics/.git-credentials:/root/.git-credentials
+    networks:
+      - cs2
+
 secrets:
   influxdb2-admin-username:
     file: ~/.env.influxdb2-admin-username
@@ -111,6 +120,7 @@ secrets:
     file: ~/.env.influxdb2-admin-token
   influxdb2-pushmetrics-token:
     file: ~/.env.influxdb2-admin-token
+
 volumes:
   influxdb2-data:
   influxdb2-config:

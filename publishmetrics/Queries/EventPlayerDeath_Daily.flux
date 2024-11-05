@@ -1,0 +1,6 @@
+from(bucket: "CS2")
+|> range(start: -72h)
+|> filter(fn: (r) => r["_measurement"] == "EventPlayerDeath")
+|> group(columns: ["Attacker"])
+|> aggregateWindow(every: 24h, fn: count)
+|> filter(fn: (r) => r["_value"] > 0)

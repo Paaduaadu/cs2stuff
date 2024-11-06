@@ -2,7 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Influx\Influx.csproj" />
-    <Content Include="Queries/*" CopyToOutputDirectory="Always"/>
+    <Content Include="Queries/*" CopyToOutputDirectory="Always" />
   </ItemGroup>
 
   <PropertyGroup>

@@ -1,6 +1,8 @@
-public static class Extensions
+namespace pushmetrics.Core
 {
-    public static string ReadSecret(string envVariableName) =>
-        File.ReadAllText(Environment.GetEnvironmentVariable(envVariableName)!).Trim();
+    public static class ConsoleExtensions
+    {
+        public static string ReadSecret(string envVariableName) =>
+            File.ReadAllText(Environment.GetEnvironmentVariable(envVariableName)!).Trim();
+    }
 }
-

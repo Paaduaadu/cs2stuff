@@ -109,7 +109,7 @@ services:
     restart: unless-stopped
     environment:
       - INFLUXDB_TOKEN_FILE=/run/secrets/influxdb2-pushmetrics-token
-      - PUBLISHMETRICS_REPO=https://github.com/Paaduaadu/cs2stuff.git
+      - PUBLISHMETRICS_REPO=https://github.com/andripeetso/hundid.git
       - GIT_CREDENTIALS_FILE=/run/secrets/git-credentials
     secrets:
       - influxdb2-pushmetrics-token

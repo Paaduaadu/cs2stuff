@@ -1,4 +1,4 @@
-* * * * * root /App/run.sh >> /var/log/cron.log 2>&1
+*/10 * * * * root /App/run.sh >> /var/log/cron.log 2>&1
 
 #* * * * * *
 #| | | | | | 

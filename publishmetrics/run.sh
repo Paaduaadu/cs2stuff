@@ -7,8 +7,9 @@ mkdir -p /App/Results
 # Run your dotnet console app
 dotnet /App/publishmetrics.dll 
 
+cp $GIT_CREDENTIALS_FILE ~/.git-credentials
 cd ~
-git clone https://github.com/Paaduaadu/cs2stuff.git ~/repo
+git clone $PUBLISHMETRICS_REPO ~/repo
 cd ~/repo
 git pull
 

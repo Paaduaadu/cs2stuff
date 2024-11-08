@@ -109,10 +109,11 @@ services:
     restart: unless-stopped
     environment:
       - INFLUXDB_TOKEN_FILE=/run/secrets/influxdb2-pushmetrics-token
+      - PUBLISHMETRICS_REPO=https://github.com/Paaduaadu/cs2stuff.git
+      - GIT_CREDENTIALS_FILE=/run/secrets/git-credentials
     secrets:
       - influxdb2-pushmetrics-token
-    volumes:
-      - ./publishmetrics/.git-credentials:/root/.git-credentials
+      - git-credentials
     networks:
       - cs2
 
@@ -125,6 +126,8 @@ secrets:
     file: ~/.env.influxdb2-admin-token
   influxdb2-pushmetrics-token:
     file: ~/.env.influxdb2-admin-token
+  git-credentials:
+    file: ~/.env.git-credentials
 
 volumes:
   influxdb2-data:

@@ -107,6 +107,10 @@ services:
     image: cs2wolves/publishmetrics
     container_name: publishmetrics
     restart: unless-stopped
+    environment:
+      - INFLUXDB_TOKEN_FILE=/run/secrets/influxdb2-pushmetrics-token
+    secrets:
+      - influxdb2-pushmetrics-token
     volumes:
       - ./publishmetrics/.git-credentials:/root/.git-credentials
     networks:

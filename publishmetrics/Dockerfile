@@ -7,9 +7,6 @@ COPY . ./
 RUN dotnet publish ./publishmetrics/publishmetrics.csproj -c Release -o out
 
 # Build runtime image
-
-
-# Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0@sha256:6c4df091e4e531bb93bdbfe7e7f0998e7ced344f54426b7e874116a3dc3233ff
 WORKDIR /App
 COPY --from=build-env /App/out .
@@ -21,9 +18,10 @@ RUN git config --global credential.helper store
 # Add export environment variable script and schedule
 COPY publishmetrics/*.sh ./
 COPY publishmetrics/schedule /etc/cron.d/schedule
-RUN sed -i 's/\r//' run.sh \
+RUN sed -i 's/\r//' export_env.sh \
+    && sed -i 's/\r//' run.sh \
     && sed -i 's/\r//' /etc/cron.d/schedule \
-    && chmod +x run.sh \
+    && chmod +x export_env.sh run.sh \
     && chmod 0644 /etc/cron.d/schedule
 
 # Create log file
@@ -34,4 +32,4 @@ RUN chmod 0666 /var/log/cron.log
 VOLUME /var/log
 
 # Run Cron
-CMD /usr/sbin/cron && tail -f /var/log/cron.log
+CMD /App/export_env.sh && /usr/sbin/cron && tail -f /var/log/cron.log

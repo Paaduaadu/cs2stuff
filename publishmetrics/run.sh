@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Set environment variables copied from container
+source /App/set_env.sh;
+
 mkdir -p /App/Results
 # Run your dotnet console app
 dotnet /App/publishmetrics.dll 

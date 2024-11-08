@@ -18,14 +18,18 @@ var getWriter = FunctionalExtensions.Memoize(path =>
 await foreach(var t in Directory
     .EnumerateFiles(queryFilesPath)
     .Select(file => (Name: Path.GetFileNameWithoutExtension(file), Query: File.ReadAllText(file)))
-    .Select(query => (query.Name,  Results: read(query.Query)))
     .ToAsyncEnumerable()
+    .SelectAwait(async query => 
+        (
+            query.Name, 
+            Results: await read(query.Query).AppendIf(new EventPlayerDeathRecord(), async e => !await e.AnyAsync()),
+            Writer: getWriter(Path.Combine(resultFilesPath, query.Name + ".json"))))
     .Select(records => 
         records
             .Results
             .ExtractTransformLoad(
                 rec => JsonSerializer.Serialize(rec),
-                json => getWriter(Path.Combine(resultFilesPath, records.Name + ".json")).WriteLineAsync(json)))) {
+                json => records.Writer.WriteLineAsync(json)))) {
     await t;
 };
 

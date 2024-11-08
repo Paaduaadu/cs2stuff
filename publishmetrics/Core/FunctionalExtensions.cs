@@ -12,5 +12,11 @@ namespace publishmetrics.Core
                     }
                     return result;
                 };
+
+        public static async Task<IAsyncEnumerable<T>> AppendIf<T>(this IAsyncEnumerable<T> e, T newElement, Func<IAsyncEnumerable<T>, Task<bool>> predicate)
+        {
+            return await predicate(e) ? e.Append(newElement) : e;
+        }
+            
     }
 }

@@ -1,7 +1,7 @@
 ﻿using eventbuffer.Events;
 using pushmetrics.Core;
 
-Console.WriteLine("0.0.4");
+Console.WriteLine("0.0.5");
 
 var writeMetric = Influx.GetWrite(ConsoleExtensions.ReadSecret("INFLUXDB_TOKEN_FILE"));
 

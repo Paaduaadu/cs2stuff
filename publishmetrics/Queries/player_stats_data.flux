@@ -115,4 +115,4 @@ dk_a_hs_mvp_dmg = join.left(
     as: (l, r) => ({l with Damage: r["_value"]}),
 )
 
-dk_a_hs_mvp_dmg |> filter(fn: (r) => r["Player.SteamID"] != "")
+dk_a_hs_mvp_dmg |> filter(fn: (r) => r["SteamID"] != "")

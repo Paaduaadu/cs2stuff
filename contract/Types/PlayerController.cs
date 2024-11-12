@@ -1,3 +1,3 @@
 namespace eventbuffer_contract.Types;
 
-public record PlayerController(string PlayerName, bool IsBot);
+public record PlayerController(string PlayerName, bool IsBot, string SteamID);

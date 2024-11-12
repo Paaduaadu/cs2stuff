@@ -52,7 +52,7 @@ public static class Transform
         e == null
             ? null
             : e.IsValid
-                ? new(e.PlayerName, e.IsBot)
+                ? new(e.PlayerName, e.IsBot, e.AuthorizedSteamID == null ? string.Empty: e.AuthorizedSteamID.SteamId2)
                 : null;
 
     enum CSMvpReason_t

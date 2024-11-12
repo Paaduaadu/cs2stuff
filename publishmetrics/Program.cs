@@ -1,7 +1,6 @@
 ﻿using System.Text.Json;
 using publishmetrics.Core;
 using publishmetrics.Types;
-using streaming;
 
 var influxHost = args.ElementAtOrDefault(0) ?? "http://influxdb2:8086";
 var queryFilesPath = args.ElementAtOrDefault(1) ?? "/App/Queries";
@@ -24,12 +23,12 @@ await foreach(var t in Directory
             query.Name, 
             Results: await read(query.Query).AppendIf(new EventPlayerDeathRecord(), async e => !await e.AnyAsync()),
             Writer: getWriter(Path.Combine(resultFilesPath, query.Name + ".json"))))
-    .Select(records => 
-        records
-            .Results
-            .ExtractTransformLoad(
-                rec => JsonSerializer.Serialize(rec),
-                json => records.Writer.WriteLineAsync(json)))) {
+    .Select(async records => 
+        await JsonSerializer.SerializeAsync(
+            records.Writer.BaseStream,
+            await records
+                .Results
+                .ToDictionaryAsync(rec  => rec.SteamID!, rec => rec)))) {
     await t;
 };
 

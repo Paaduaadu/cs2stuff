@@ -47,6 +47,6 @@ public static class Transform
             ? pd
             : pd
                 .Tag(label, pc.PlayerName)
-                .Tag($"{label}.IsBot", pc.IsBot.ToString());
-
+                .Tag($"{label}.IsBot", pc.IsBot.ToString())
+                .Tag($"{label}.SteamID", pc.SteamID);
 }

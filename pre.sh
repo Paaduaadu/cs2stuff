@@ -1,7 +1,7 @@
 cssPluginHome="/home/steam/exportevents"
 csgoDir="/home/steam/cs2-dedicated/game/csgo"
 addonsDir="$csgoDir/addons"
-file="$addonsDir/counterstrikesharp/plugins/exportevents"
+file="$addonsDir/counterstrikesharp/plugins/exporteventsplugin"
 if [ ! -e "$file" ]; then
     mkdir -p $addonsDir
     

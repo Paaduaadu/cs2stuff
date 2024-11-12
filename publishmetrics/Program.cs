@@ -28,6 +28,7 @@ await foreach(var t in Directory
             records.Writer.BaseStream,
             await records
                 .Results
+                .Where(rec => !string.IsNullOrEmpty(rec.SteamID))
                 .ToDictionaryAsync(rec  => rec.SteamID!, rec => rec)))) {
     await t;
 };

@@ -12,12 +12,12 @@ var getWriter = FunctionalExtensions.Memoize(path =>
 
 
 await Task.WhenAll(
-    Process<PlayersDataRecord>([Path.Combine(queryFilesPath, "players_data.flux")]),
-    Process<PlayerStatsDataRecord>([Path.Combine(queryFilesPath, "player_stats_data.flux")]));
+    Process<PlayersDataRecord>([Path.Combine(queryFilesPath, "players_data.flux")], x => x.First()),
+    Process<PlayerStatsDataRecord>([Path.Combine(queryFilesPath, "player_stats_data.flux")], x => x.Single()));
 
 writersCache.Values.ToList().ForEach(w => w.Close());
 
-IAsyncEnumerable<Task> EnumerateResults<T>(IEnumerable<string> queryFiles) where T : BaseRecord, new() =>
+IAsyncEnumerable<Task> EnumerateResults<T>(IEnumerable<string> queryFiles, Func<IEnumerable<T>, T> aggregate) where T : BaseRecord, new() =>
     queryFiles
         .Select(file =>
             new
@@ -39,7 +39,8 @@ IAsyncEnumerable<Task> EnumerateResults<T>(IEnumerable<string> queryFiles) where
                 await records
                     .Results
                     .Where(rec => !string.IsNullOrEmpty(rec.SteamID))
-                    .ToDictionaryAsync(rec => rec.SteamID!, rec => rec)));
+                    .GroupBy(x => x.SteamID)
+                    .ToDictionaryAsync(rec => rec.Key!, rec => aggregate(rec.ToEnumerable()))));
 
 static Func<string, IAsyncEnumerable<T>> GetRead<T>(string influxHost) where T : BaseRecord, new()
 {
@@ -47,9 +48,9 @@ static Func<string, IAsyncEnumerable<T>> GetRead<T>(string influxHost) where T :
     return q => read(q);
 }
 
-async Task Process<T>(IEnumerable<string> queryFiles) where T : BaseRecord, new()
+async Task Process<T>(IEnumerable<string> queryFiles, Func<IEnumerable<T>, T> aggregate) where T : BaseRecord, new()
 {
-    await foreach (var t in EnumerateResults<T>(queryFiles))
+    await foreach (var t in EnumerateResults<T>(queryFiles, aggregate))
     {
         await t;
     };

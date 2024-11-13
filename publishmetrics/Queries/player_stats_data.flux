@@ -2,7 +2,7 @@ import "join"
 import "array"
 import "internal/debug"
 
-rangeStart = -168h
+rangeStart = -3y
 
 withAttackerSteamId = (tables=<-) => tables
     |> filter(fn: (r) => r["Attacker.SteamID"] != "")
@@ -84,7 +84,7 @@ dk = join.left(
     left: deaths,
     right: kills,
     on: (l, r) => r["Attacker.SteamID"] == l["Player.SteamID"],
-    as: (l, r) => ({"Player.SteamID": l["Player.SteamID"], Player: l.Player, Deaths:l["_value"], Kills: r["_value"], KDR: (float(v:r["_value"])/float(v:l["_value"])),"_value": (float(v:r["_value"])/float(v:l["_value"]))}),
+    as: (l, r) => ({"Player.SteamID": l["Player.SteamID"], "SteamID": l["Player.SteamID"], Player: l.Player, Deaths:l["_value"], Kills: r["_value"], KDR: (float(v:r["_value"])/float(v:l["_value"])),"_value": (float(v:r["_value"])/float(v:l["_value"]))}),
 ) 
 
 dk_a = join.left(
@@ -115,4 +115,4 @@ dk_a_hs_mvp_dmg = join.left(
     as: (l, r) => ({l with Damage: r["_value"]}),
 )
 
-dk_a_hs_mvp_dmg |> filter(fn: (r) => r["Player.SteamID"] != "")
+dk_a_hs_mvp_dmg |> filter(fn: (r) => r["SteamID"] != "")

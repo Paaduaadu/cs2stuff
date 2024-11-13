@@ -5,7 +5,8 @@ namespace publishmetrics.Types
 {
     public class EventPlayerDeathRecord
     {
-        [Column("SteamID")] public string SteamID { get; set; }
+        [JsonIgnore]
+        [Column("SteamID")] public string? SteamID { get; set; }
         [Column(nameof(Player))] public string? Player { get; set; }
         [JsonPropertyName("total_mvps")]
         [Column(nameof(Mvp))] public int Mvp { get; set; }
@@ -20,6 +21,22 @@ namespace publishmetrics.Types
         [JsonPropertyName("total_damage")]
         [Column(nameof(Damage))] public int Damage { get; set; }  
         [JsonPropertyName("total_headshots")]
-        [Column(nameof(Headshots))] public int Headshots { get; set; }  
+        [Column(nameof(Headshots))] public int Headshots { get; set; }
+
+        [JsonPropertyName("weapons")]
+        public Dictionary<string, Weapon> Weapons { get; set; } =  new Dictionary<string, Weapon>{
+            {"Not-Implemented", new Weapon()}
+  
+        };
+
+        public class Weapon
+        {
+            [JsonPropertyName("kills")]
+            public int Kills { get; set; } = 0;
+            [JsonPropertyName("headshots")]
+            public int Headshots { get; set; } = 0;
+            [JsonPropertyName("damage")]
+            public int Damage { get; set; } = 0;
+        }
     };
 }

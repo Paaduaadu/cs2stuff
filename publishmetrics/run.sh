@@ -13,8 +13,8 @@ git clone $PUBLISHMETRICS_REPO ~/repo
 cd ~/repo
 git pull
 
-mkdir -p ~/repo/results
-cp -rf /App/Results/* ~/repo/results
-git add results/*.json
+mkdir -p ~/repo/public/results
+cp -rf /App/Results/* ~/repo/public/results
+git add public/results/*.json
 git commit -m "Stats update"
 git push

@@ -12,7 +12,7 @@ var getWriter = FunctionalExtensions.Memoize(path =>
 
 
 await Task.WhenAll(
-    Process<PlayersDataRecord>([Path.Combine(queryFilesPath, "players_data.flux")], x => x.First()),
+    Process<PlayersDataRecord>([Path.Combine(queryFilesPath, "players_data.flux")], x => x.Last()),
     Process<PlayerStatsDataRecord>([Path.Combine(queryFilesPath, "player_stats_data.flux")], x => x.Single()));
 
 writersCache.Values.ToList().ForEach(w => w.Close());

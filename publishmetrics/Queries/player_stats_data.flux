@@ -29,10 +29,10 @@ tMvp = from(bucket: "CS2")
 deaths = union(tables:[
   tEpd
     |> withPlayerSteamId()
-    |> group(columns:["Player", "Player.SteamID"])
+    |> group(columns:["Player.SteamID"])
     |> sum()
     |> group(),
-    array.from(rows: [{_value:debug.null(type: "int"), Player:debug.null(type: "string"), "Player.SteamID": debug.null(type: "string")}])])
+    array.from(rows: [{_value:debug.null(type: "int"), "Player.SteamID": debug.null(type: "string")}])])
 
 tKills = tEpd
     |> withAttackerSteamId()
@@ -84,7 +84,7 @@ dk = join.left(
     left: deaths,
     right: kills,
     on: (l, r) => r["Attacker.SteamID"] == l["Player.SteamID"],
-    as: (l, r) => ({"Player.SteamID": l["Player.SteamID"], "SteamID": l["Player.SteamID"], Player: l.Player, Deaths:l["_value"], Kills: r["_value"], KDR: (float(v:r["_value"])/float(v:l["_value"])),"_value": (float(v:r["_value"])/float(v:l["_value"]))}),
+    as: (l, r) => ({"Player.SteamID": l["Player.SteamID"], "SteamID": l["Player.SteamID"], Deaths:l["_value"], Kills: r["_value"], KDR: (float(v:r["_value"])/float(v:l["_value"])),"_value": (float(v:r["_value"])/float(v:l["_value"]))}),
 ) 
 
 dk_a = join.left(

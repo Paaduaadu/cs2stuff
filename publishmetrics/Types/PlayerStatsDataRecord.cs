@@ -5,7 +5,6 @@ namespace publishmetrics.Types
 {
     public class PlayerStatsDataRecord : BaseRecord
     {
-        [Column(nameof(Player))] public string? Player { get; set; }
         [JsonPropertyName("total_mvps")]
         [Column(nameof(Mvp))] public int Mvp { get; set; }
         [JsonPropertyName("total_assists")]

@@ -3,10 +3,8 @@ using System.Text.Json.Serialization;
 
 namespace publishmetrics.Types
 {
-    public class EventPlayerDeathRecord
+    public class PlayerStatsDataRecord : BaseRecord
     {
-        [JsonIgnore]
-        [Column("SteamID")] public string? SteamID { get; set; }
         [Column(nameof(Player))] public string? Player { get; set; }
         [JsonPropertyName("total_mvps")]
         [Column(nameof(Mvp))] public int Mvp { get; set; }

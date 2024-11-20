@@ -1,3 +1,8 @@
+
+cssZip = "counterstrikesharp-with-runtime-build-287-linux-6cf124b.zip"
+cssDownloadPath = "v287/$cssZip"
+cssDownloadUrl = "https://github.com/roflmuffin/CounterStrikeSharp/releases/download/$cssDownloadPath"
+
 cssPluginHome="/home/steam/exportevents"
 csgoDir="/home/steam/cs2-dedicated/game/csgo"
 addonsDir="$csgoDir/addons"
@@ -15,15 +20,15 @@ if [ ! -e "$file" ]; then
                 Game    csgo
     /g' game/csgo/gameinfo.gi
 
-    wget https://github.com/roflmuffin/CounterStrikeSharp/releases/download/v276/counterstrikesharp-with-runtime-build-276-linux-42dd270.zip
-
-    unzip counterstrikesharp-with-runtime-build-276-linux-42dd270.zip
+    
+    wget cssDownloadUrl
+    unzip cssZip
     cp -R addons/* $addonsDir
     rm -rf addons
-    rm -rf counterstrikesharp-with-runtime-build-276-linux-42dd270.zip
-
-    mkdir $file
-    cp -R $cssPluginHome/* $file/
+    rm -rf cssZip
 else
     echo "pre.sh has been executed already once."
 fi
+
+mkdir $file
+cp -R $cssPluginHome/* $file/

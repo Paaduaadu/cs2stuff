@@ -9,7 +9,7 @@ public class ExportEventsPlugin : BasePlugin
 
     public override string ModuleName => nameof(ExportEventsPlugin);
 
-    public override string ModuleVersion => "0.0.7";
+    public override string ModuleVersion => "0.0.8";
 
     public override void Load(bool hotReload)
     {

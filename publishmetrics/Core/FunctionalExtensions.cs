@@ -2,7 +2,7 @@ namespace publishmetrics.Core
 {
     public static class FunctionalExtensions
     {
-        public static Func<string, T> Memoize<T>(Func<string, T> value, Dictionary<string, T> cache) =>
+        public static Func<string, T> WithCache<T>(Func<string, T> value, Dictionary<string, T> cache) =>
             key =>
                 {
                     if (!cache.TryGetValue(key, out T? result))
@@ -12,11 +12,9 @@ namespace publishmetrics.Core
                     }
                     return result;
                 };
+                
+        public static async Task<IAsyncEnumerable<T>> AppendIf<T>(this IAsyncEnumerable<T> e, T newElement, Func<IAsyncEnumerable<T>, Task<bool>> predicate) =>
+            await predicate(e) ? e.Append(newElement) : e;
 
-        public static async Task<IAsyncEnumerable<T>> AppendIf<T>(this IAsyncEnumerable<T> e, T newElement, Func<IAsyncEnumerable<T>, Task<bool>> predicate)
-        {
-            return await predicate(e) ? e.Append(newElement) : e;
-        }
-            
     }
 }

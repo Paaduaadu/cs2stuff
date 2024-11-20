@@ -7,7 +7,7 @@ var queryFilesPath = args.ElementAtOrDefault(1) ?? "/App/Queries";
 var resultFilesPath = args.ElementAtOrDefault(2) ?? "/App/Results";
 
 var streamCache = new Dictionary<string, Stream>();
-var getTargetStream = FunctionalExtensions.Memoize(path =>
+var getTargetStream = FunctionalExtensions.WithCache(path =>
     new FileStream(path, FileMode.Create), streamCache);
 
 await Task.WhenAll(

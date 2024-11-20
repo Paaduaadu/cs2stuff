@@ -1,3 +1,4 @@
+using contract.Types;
 using eventbuffer_contract.Types;
 
 namespace eventbuffer_contract.Events;
@@ -9,4 +10,7 @@ public record struct EventPlayerHurt(
     string Weapon,
     int DmgHealth,
     int DmgArmor,
-    string Hitgroup);
+    string Hitgroup) : IHasGameMetadata
+{
+    public GameMetadata Metadata { get; set; }
+}

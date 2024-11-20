@@ -1,3 +1,5 @@
+using contract.Types;
+using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 
 namespace exportevents.Events;
@@ -54,6 +56,9 @@ public static class Transform
             : e.IsValid
                 ? new(e.PlayerName, e.IsBot, e.AuthorizedSteamID == null ? string.Empty: e.AuthorizedSteamID.SteamId2)
                 : null;
+
+    internal static GameMetadata AsSerializeable(CCSGameRules? x) =>
+        x == null ? new GameMetadata() : new (x.WarmupPeriod, x.HasMatchStarted, Server.MapName);
 
     enum CSMvpReason_t
     {

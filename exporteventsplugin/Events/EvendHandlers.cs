@@ -17,11 +17,7 @@ public static class EvendHandlers
     public static IReadOnlyCollection<(Task ReadChannelTask, Action<Exception?> StopWriting)> Create(BasePlugin plugin) =>
         [
             // Player is killed.
-            plugin.ListenAndPublish<
-                // Type of the CSSharp library event. See the cssharp docs and library code for what is availaböe.
-                EventPlayerDeath,
-                // Type that gets published as metric. These are custom created code objects that can be serialized (transported as bytes over the wire).
-                eventbuffer_contract.Events.EventPlayerDeath>(
+            plugin.ListenAndPublish<EventPlayerDeath, eventbuffer_contract.Events.EventPlayerDeath>(
                     // How to convert between the above 2. We convert to select only the fields we need in the format we need.
                     // The csssharp types are not serializeable (cannot be transported over the wire as bytes).
                     // Also, even if they would be, it would be wasteful to do transport everything. 

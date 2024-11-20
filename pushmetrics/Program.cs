@@ -1,5 +1,5 @@
-﻿using eventbuffer.Events;
-using pushmetrics.Core;
+﻿using pushmetrics.Core;
+using pushmetrics.Events;
 
 Console.WriteLine("0.0.5");
 

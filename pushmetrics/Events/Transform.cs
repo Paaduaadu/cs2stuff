@@ -2,7 +2,7 @@ using eventbuffer_contract.Events;
 using eventbuffer_contract.Types;
 using InfluxDB.Client.Writes;
 
-namespace eventbuffer.Events;
+namespace pushmetrics.Events;
 
 public static class Transform
 {
@@ -49,4 +49,12 @@ public static class Transform
                 .Tag(label, pc.PlayerName)
                 .Tag($"{label}.IsBot", pc.IsBot.ToString())
                 .Tag($"{label}.SteamID", pc.SteamID);
+
+    public static PointData ToTags<T>(this PointData pd, T hasMetadata) where T : IHasGameMetadata =>
+        pd
+            .Tag("Metadata.MapName", hasMetadata.Metadata.MapName)
+            .Tag("Metadata.HasMatchStarted", hasMetadata.Metadata.HasMatchStarted.ToString());
+
+    public static Func<THasGameMetadata, PointData> WithGameMetadata<THasGameMetadata>(this Func<THasGameMetadata, PointData> toMetric) where THasGameMetadata : IHasGameMetadata =>
+            hasGameMetadata => toMetric(hasGameMetadata).ToTags(hasGameMetadata);
 }

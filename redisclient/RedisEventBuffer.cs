@@ -4,22 +4,21 @@ namespace eventbuffer_redis;
 
 public static class RedisEventBuffer
 {
-    private const string RedisHostName = "buffer";
     private const string GroupName = "loader";
     private const string ConsumerName = GroupName + "-0";
 
-    public static async Task<Func<Task<T>>> GetReadOne<T>(string streamName) where T : struct
+    public static async Task<Func<Task<T>>> GetReadOne<T>(string streamName, string redisHostName) where T : struct
     {
-        var db = GetDatabase();
+        var db = GetDatabase(redisHostName);
 
         await EnsureConsumerGroup(db, streamName, GroupName);
 
         return () => ReadOne<T>(db, streamName);
     }
 
-    public static Func<T, Task> GetAppendOne<T>(string streamName)
+    public static Func<T, Task> GetAppendOne<T>(string streamName, string redisHostName)
     {
-        var db = GetDatabase();
+        var db = GetDatabase(redisHostName);
         
         return e =>
             db.StreamAddAsync(
@@ -53,8 +52,8 @@ public static class RedisEventBuffer
         }
     }
 
-    private static IDatabase GetDatabase() =>
+    private static IDatabase GetDatabase(string redisHostName) =>
         ConnectionMultiplexer
-            .Connect(RedisHostName)
+            .Connect(redisHostName)
             .GetDatabase();
 }

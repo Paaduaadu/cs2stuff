@@ -17,7 +17,7 @@ public class ExportEventsPlugin : BasePlugin
         Console.WriteLine("ExportEvents:" + ModuleVersion);
 
         // To add new event listeners go into this method and copy what has been done, more details inside.
-        readEventChannelTasks = EvendHandlers.Create(this);
+        readEventChannelTasks = EvendHandlers.Create(this, "buffer");
     }
 
     public override void Unload(bool hotReload)

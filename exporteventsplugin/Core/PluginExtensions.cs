@@ -11,7 +11,8 @@ public static class PluginExtensions
 {
     public static (Task ReadChannelTask, Action<Exception?> StopWriting) ListenAndPublish<TGameEvent, TTargetType>(
         this BasePlugin plugin,
-        Func<TGameEvent, TTargetType> transform)
+        Func<TGameEvent, TTargetType> transform,
+        string redisHostName)
         where TGameEvent : GameEvent
         where TTargetType : struct, IHasGameMetadata
     {
@@ -29,7 +30,7 @@ public static class PluginExtensions
             gameEvent =>
                 transform(gameEvent) with { 
                     Metadata = Transform.AsSerializeable(getGameRules())},
-            EventBufferFactory.GetAppendEvent<TTargetType>());
+            EventBufferFactory.GetAppendEvent<TTargetType>(redisHostName));
     }
 
     public static Func<T?> Memoize<T>(Func<T> f)

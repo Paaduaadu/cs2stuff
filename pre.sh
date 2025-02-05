@@ -9,7 +9,7 @@ csgoDir="/home/steam/cs2-dedicated/game/csgo"
 addonsDir="$csgoDir/addons"
 file="$addonsDir/counterstrikesharp/plugins/exporteventsplugin"
 
-if [ ! -e "$file" ]; then
+
     mkdir -p $addonsDir
     
     wget https://mms.alliedmods.net/mmsdrop/2.0/$metamodPackage
@@ -28,9 +28,6 @@ if [ ! -e "$file" ]; then
     cp -R addons/* $addonsDir
     rm -rf addons
     rm -rf $cssZip
-else
-    echo "pre.sh has been executed already once."
-fi
 
 mkdir $file
 cp -R $cssPluginHome/* $file/
